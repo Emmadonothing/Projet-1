@@ -112,3 +112,24 @@ GROUP BY
     p.productLine, MONTH(o.orderDate)
 ORDER BY 
     p.productLine, month;
+
+--Stock Top 5 = la date d’aujourd’hui sur l’ordinateur, et soustrait l’intervalle choisi
+SELECT 
+    p.productCode,
+    p.productName,
+    p.quantityInStock,
+    SUM(od.quantityOrdered) AS totalQuantitySold
+FROM 
+    products p
+JOIN 
+    orderdetails od ON p.productCode = od.productCode
+JOIN 
+    orders o ON od.orderNumber = o.orderNumber
+WHERE 
+    o.orderDate >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) -- Ajustez l'intervalle selon vos besoins
+GROUP BY 
+    p.productCode, p.productName, p.quantityInStock
+ORDER BY 
+    totalQuantitySold DESC
+LIMIT 5;
+
